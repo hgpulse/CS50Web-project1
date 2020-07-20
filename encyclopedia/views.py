@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound
 
 from . import util
-import re
+
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
