@@ -16,10 +16,26 @@ def entry(request, title):
     if entry_exist:
   
         return render (request, "encyclopedia/entry.html", {
-            "entry": entry_exist
+            "entry": entry_exist,
+            "title":title
         })
     else:
         return HttpResponseNotFound('<h1>Page not found</h1>')
-    
+
+def get_entry(request):
+    search = request
+    # if this is a POST request we need to process the form data
+    if request.method == 'GET':
+        # create a form instance and populate it with data from the request:
+        form = NameForm(request.GET)
+        return render(request, 'search_result.html')
+
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = NameForm()
+
+    return render(request, 'search_result.html')
+
 
 
