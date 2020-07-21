@@ -72,3 +72,12 @@ def validate(request):
         return render(request, "encyclopedia/index.html", {
             "entries": util.list_entries()
         })
+
+def edit(request):
+    title = request.GET.get('title')
+    entry = request.GET.get('entry')
+    
+    return render(request, 'encyclopedia/edit.html', {
+        'title': title,
+        'entry': entry
+        })
