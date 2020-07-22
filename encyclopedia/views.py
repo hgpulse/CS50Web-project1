@@ -1,10 +1,15 @@
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseNotFound
-
+from django.shortcuts import render, redirect
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
+from django.urls import reverse
 
 from . import util
 import markdown2
-from .forms import NameForm
+
+from .forms import EditForm, NewForm
+
+from .models import entries
+
+
 
 
 def index(request):
@@ -30,7 +35,7 @@ def entry(request, title):
 def search(request):
     # get the string in the field
     query = request.GET.get('q').lower()
-    print(query)
+    # print(query)
     entry_exist = util.get_entry(query)
     # check if the query is egual to an exeisting entry
     if entry_exist:
@@ -51,33 +56,44 @@ def search(request):
         "search": result
     })  
 
-def create(request):
-    return render(request, "encyclopedia/create.html")
+def create(request): #create a new page
 
-def validate(request):
+    if request.method == "POST":
+        #store the user data in the class form format
+        form = NewForm(request.POST)
+       
         
-        #lower case for comparaison
-        title = request.GET.get('title').lower()
-        entry = request.GET.get('entry').lower()
-        
-        #get the list of existing entries
-        entries = util.get_entry(title)
-        if entries:
-            return HttpResponseNotFound('<h1>Article already exist</h1>')
-    
-        util.save_entry(title.upper(), entry)
-        
-        #return the updated list
-        
-        return render(request, "encyclopedia/index.html", {
-            "entries": util.list_entries()
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            entry = form.cleaned_data["entry"]
+            # add in database
+            entries = util.get_entry(title)
+            # Check for existing content
+            if entries:
+                return HttpResponseNotFound('<h1>Article already exist</h1>')
+            
+            # save the new entry as a file.md in entries/title.md
+
+            util.save_entry(title, entry)
+            
+            # redirect on the new entry
+            return redirect("entry", title=title)
+
+    # Propose a new empty form if it's not valid
+    return render(request, 'encyclopedia/create.html', {
+       "form": NewForm()
         })
 
 def edit(request):
-    title = request.GET.get('title')
-    entry = request.GET.get('entry')
-    
-    return render(request, 'encyclopedia/edit.html', {
-        'title': title,
-        'entry': entry
-        })
+  
+    # dictionary for initial data with  
+    # field names as keys 
+    context ={} 
+  
+    # add the dictionary during initialization 
+    form = EditForm(request.POST or None) 
+    if form.is_valid(): 
+        form.save() 
+          
+    context['form']= form 
+    return render(request, "encyclopedia/edit.html", context) 
