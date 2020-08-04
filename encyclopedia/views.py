@@ -5,7 +5,7 @@ from django.urls import reverse
 from . import util
 import markdown2
 
-from .forms import EditForm, NewForm
+from .forms import editPage, NewForm
 
 from .models import entries
 
@@ -84,16 +84,10 @@ def create(request): #create a new page
        "form": NewForm()
         })
 
-def edit(request):
-  
-    # dictionary for initial data with  
-    # field names as keys 
-    context ={} 
-  
-    # add the dictionary during initialization 
-    form = EditForm(request.POST or None) 
-    if form.is_valid(): 
-        form.save() 
-          
-    context['form']= form 
-    return render(request, "encyclopedia/edit.html", context) 
+def edit(request, title):
+    editForm = editPage()
+    editForm = editPage(initial={'title': title, 'textContent': util.get_entry(title)})
+    
+    return render(request, "encyclopedia/edit.html", {
+        "editForm": editPage(),
+    })
