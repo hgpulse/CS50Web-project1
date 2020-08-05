@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.urls import reverse
 
 from . import util
-import markdown2
+from markdown2 import Markdown
 
 from .forms import editPage, NewForm
 
@@ -22,10 +22,14 @@ def entry(request, title):
     
     
     if entry_exist:
-  
+        #set markdown
+        markdowner = Markdown()
+        # convert and store the result in HTML
+        html = markdowner.convert(entry_exist)
+        
         return render (request, "encyclopedia/entry.html", {
-            "entry": entry_exist,
-            "title":title
+            "entry": html,
+            "title": title
         })
     else:
         return HttpResponseNotFound('<h1>Page not found</h1>')
@@ -40,10 +44,8 @@ def search(request):
     entry_exist = util.get_entry(query)
     # check if the query is egual to an exeisting entry
     if entry_exist:
-        return render (request, "encyclopedia/entry.html", {
-            "entry": entry_exist,
-            "title":query
-        })
+        # redirect on the new entry
+        return redirect("entry", title=title)
     else:
         #get the list of existing entries
         entries = util.list_entries()
@@ -67,14 +69,15 @@ def create(request): #create a new page
         if form.is_valid():
             title = form.cleaned_data["title"]
             entry = form.cleaned_data["entry"]
-            # add in database
+            # get list in database
             entries = util.get_entry(title)
             # Check for existing content
             if entries:
                 return HttpResponseNotFound('<h1>Article already exist</h1>')
             
             # save the new entry as a file.md in entries/title.md
-
+            print(title)
+            print(entry)
             util.save_entry(title, entry)
             
             # redirect on the new entry
