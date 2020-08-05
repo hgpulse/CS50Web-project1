@@ -8,9 +8,9 @@
 
 <h1>Edit page</h1>
 
-<form action={%url 'edit' %} id="usrform" method="post">
+<form action={%url 'edit' %} id="editform" method="post">
   <input type="submit" value="Save">  
   {% csrf_token %}
-  {{ form.as_p }}   
+  {{ form }}   
 </form>
 {% endblock %}

@@ -8,7 +8,7 @@ from .models import entries
 
 class editPage(forms.Form):
     title = forms.CharField()
-    textContent = forms.CharField(widget=forms.Textarea(attrs={'class' : 'textContent'}))
+    textContent = forms.CharField(label="", widget=forms.Textarea(attrs={'class' : 'textContent'}))
     
 class NewForm(forms.Form):
     title = forms.CharField(label="Title", initial="Enter Title Here")

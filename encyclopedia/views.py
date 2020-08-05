@@ -84,9 +84,12 @@ def create(request): #create a new page
        "form": NewForm()
         })
 
-def edit(request, title):
+def edit(request, name):
+    
+    print(name)
+  
     editForm = editPage()
-    editForm = editPage(initial={'title': title, 'textContent': util.get_entry(title)})
+    editForm = editPage(initial={'title': name, 'textContent': util.get_entry(name)})
     
     return render(request, "encyclopedia/edit.html", {
         "editForm": editPage(),
