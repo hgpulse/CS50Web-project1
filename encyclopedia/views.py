@@ -86,11 +86,25 @@ def create(request): #create a new page
 
 def edit(request, name):
     
-    print(name)
+    if request.method == "POST":
+        #store the user data in the class form format
+        form = editPage(request.POST)
+       
+        
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            textContent = form.cleaned_data["textContent"]
+            # add in database
+            # entries = util.get_entry(title)
+            # save the new entry as a file.md in entries/title.md
+
+            util.save_entry(title, textContent)
+            
+            # redirect on the new entry
+            return redirect("entry", title=title)
   
-    editForm = editPage()
-    editForm = editPage(initial={'title': name, 'textContent': util.get_entry(name)})
+    form = editPage(initial={'title': name, 'textContent': util.get_entry(name)})
     
     return render(request, "encyclopedia/edit.html", {
-        "editForm": editPage(),
+        "form": form,
     })
