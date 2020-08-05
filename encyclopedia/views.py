@@ -9,6 +9,7 @@ from .forms import editPage, NewForm
 
 from .models import entries
 
+from random import choice
 
 
 
@@ -108,3 +109,9 @@ def edit(request, name):
     return render(request, "encyclopedia/edit.html", {
         "form": form,
     })
+
+def random(request):
+    entriesList = util.list_entries()
+    choice_e = choice(entriesList)
+    
+    return redirect("entry", title=choice_e)

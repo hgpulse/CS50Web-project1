@@ -7,6 +7,8 @@ urlpatterns = [
     path("<str:title>", views.entry, name="entry"),
     path('search/',views.search,name='search'),
     path('create/',views.create ,name='create'),
-    path('<str:name>/edit/', views.edit, name='edit')
+    path('<str:name>/edit/', views.edit, name='edit'),
+    path('random/', views.random, name='random')
+
     
 ]
