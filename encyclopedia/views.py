@@ -40,12 +40,12 @@ def entry(request, title):
 def search(request):
     # get the string in the field
     query = request.GET.get('q').lower()
-    # print(query)
+    print(query)
     entry_exist = util.get_entry(query)
-    # check if the query is egual to an exeisting entry
+    # check if the query is egual to an existing entry
     if entry_exist:
         # redirect on the new entry
-        return redirect("entry", title=title)
+        return redirect("entry", title=query)
     else:
         #get the list of existing entries
         entries = util.list_entries()
